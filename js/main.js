@@ -27,8 +27,13 @@ function getPlayerStatus() {
     const today = new Date().toLocaleDateString(); 
     let status = JSON.parse(localStorage.getItem('quiz_player_status'));
 
+    // 【核心修改點】如果不存在紀錄，或是日期與今天不同，則重置所有數據
     if (!status || status.lastDate !== today) {
-        status = { lastDate: today, chancesUsed: 0, totalTokens: status ? status.totalTokens : 0 };
+        status = { 
+            lastDate: today, 
+            chancesUsed: 0, 
+            totalTokens: 0 // 這裡改為 0，確保代幣每天重置
+        };
         saveStatus(status);
     }
     return status;
@@ -92,6 +97,7 @@ submitBtn.onclick = () => {
 
     let isCorrect = true;
     document.querySelectorAll('.option-item').forEach(opt => {
+        // 判定邏輯：正確選項必須被選中，錯誤選項必須不被選中
         if ((opt.dataset.correct === "true") !== opt.classList.contains('selected')) isCorrect = false;
     });
 
