@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>錢包比臉薄 - 題庫互動遊戲</title>
+    <title>錢包比臉薄 - 燕雲修煉場</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -11,30 +11,38 @@
     
     <div id="game-container">
         <header class="status-bar">
-            <div class="status-item">今日剩餘次數: <span id="chance">--</span></div>
+            <div class="status-item">今日餘次: <span id="chance">--</span></div>
             <div class="status-item highlight">累積代幣: <span id="tokens">--</span></div>
         </header>
 
-        <main id="quiz-card" class="glass-card">
+        <div id="start-screen" class="glass-card">
+            <h1 class="game-title">錢包比臉薄</h1>
+            <p class="game-subtitle">江湖知識大挑戰</p>
+            <div class="rules-box">
+                <p>📜 每日限額：3 次挑戰機會</p>
+                <p>🧠 隨機抽題：每局 5 道隨機考題</p>
+                <p>💰 代幣獎勵：依題目難度獲得權重代幣</p>
+                <p>⚠️ 注意：複選題需完全正確方可得分</p>
+            </div>
+            <button id="start-game-btn" class="primary-btn">開始修煉</button>
+        </div>
+
+        <main id="quiz-card" class="glass-card hidden">
             <div id="quiz-header">
                 <span id="question-number">Question</span>
                 <span id="reward-tag">Reward: --</span>
             </div>
-            
             <h2 id="question-text">正在加載江湖祕笈...</h2>
-            
-            <div id="options-container">
-                </div>
-
+            <div id="options-container"></div>
             <div class="action-area">
                 <button id="submit-btn" class="primary-btn">確認提交</button>
             </div>
         </main>
 
         <div id="result-overlay" class="glass-card hidden">
-            <h2>本次修煉結束</h2>
-            <p id="result-msg"></p>
-            <button id="restart-btn" class="primary-btn">再次挑戰</button>
+            <h2 class="game-title">修煉結束</h2>
+            <p id="result-msg" style="text-align: center; margin: 20px 0; font-size: 1.2rem;"></p>
+            <button id="restart-btn" class="primary-btn">回到首頁</button>
         </div>
     </div>
 
