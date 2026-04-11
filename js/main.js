@@ -1,12 +1,18 @@
 import { quizData } from './quiz-data.js';
 
 // --- 配置與變數 ---
-const MAX_CHANCES = 3; // 每日遊玩次數上限
-let currentSessionQuestions = []; // 本次遊戲抽出的 5 題
-let currentQuestionIndex = 0; // 當前題號
-let sessionTokens = 0; // 本次遊戲獲得的代幣
+const MAX_CHANCES = 3; 
+let currentSessionQuestions = []; 
+let currentQuestionIndex = 0; 
+let sessionTokens = 0; 
 
 // --- DOM 元素 ---
+const startScreen = document.getElementById('start-screen');
+const quizCard = document.getElementById('quiz-card');
+const resultOverlay = document.getElementById('result-overlay');
+const startGameBtn = document.getElementById('start-game-btn');
+const restartBtn = document.getElementById('restart-btn');
+
 const questionText = document.getElementById('question-text');
 const optionsContainer = document.getElementById('options-container');
 const submitBtn = document.getElementById('submit-btn');
@@ -14,19 +20,15 @@ const chanceEl = document.getElementById('chance');
 const tokensEl = document.getElementById('tokens');
 const questionNumEl = document.getElementById('question-number');
 const rewardTagEl = document.getElementById('reward-tag');
+const resultMsg = document.getElementById('result-msg');
 
-// --- 1. 玩家狀態管理 (localStorage) ---
+// --- 狀態管理 ---
 function getPlayerStatus() {
     const today = new Date().toLocaleDateString(); 
     let status = JSON.parse(localStorage.getItem('quiz_player_status'));
 
-    // 若為新玩家或新的一天，重置次數
     if (!status || status.lastDate !== today) {
-        status = {
-            lastDate: today,
-            chancesUsed: 0,
-            totalTokens: status ? status.totalTokens : 0
-        };
+        status = { lastDate: today, chancesUsed: 0, totalTokens: status ? status.totalTokens : 0 };
         saveStatus(status);
     }
     return status;
@@ -42,37 +44,35 @@ function updateUI() {
     tokensEl.innerText = status.totalTokens;
 }
 
-// --- 2. 遊戲核心邏輯 ---
-function initGame() {
-    const status = getPlayerStatus();
-    updateUI();
+// --- 遊戲切換邏輯 ---
+function showElement(el) {
+    [startScreen, quizCard, resultOverlay].forEach(item => item.classList.add('hidden'));
+    el.classList.remove('hidden');
+}
 
+startGameBtn.onclick = () => {
+    const status = getPlayerStatus();
     if (status.chancesUsed >= MAX_CHANCES) {
-        questionText.innerText = "今日遊玩次數已用盡，請明天再來！";
-        optionsContainer.innerHTML = "";
-        submitBtn.style.display = "none";
+        alert("今日次數已用盡！請明天再來。");
         return;
     }
+    startNewSession();
+};
 
-    // 從題庫隨機抽出 5 題
-    currentSessionQuestions = [...quizData]
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 5);
-    
+function startNewSession() {
+    currentSessionQuestions = [...quizData].sort(() => 0.5 - Math.random()).slice(0, 5);
     currentQuestionIndex = 0;
     sessionTokens = 0;
+    showElement(quizCard);
     showQuestion();
 }
 
 function showQuestion() {
     const q = currentSessionQuestions[currentQuestionIndex];
-    
-    // 更新 UI 文字
     questionNumEl.innerText = `第 ${currentQuestionIndex + 1} / 5 題`;
     rewardTagEl.innerText = `代幣獎勵: ${q.reward}`;
     questionText.innerText = q.question;
     
-    // 選項隨機打亂並渲染
     const shuffledOptions = [...q.options].sort(() => 0.5 - Math.random());
     optionsContainer.innerHTML = "";
     
@@ -80,42 +80,29 @@ function showQuestion() {
         const div = document.createElement('div');
         div.className = 'option-item';
         div.innerText = opt.text;
-        // 點擊切換選取狀態 (支援複選)
         div.onclick = () => div.classList.toggle('selected');
         div.dataset.correct = opt.isCorrect;
         optionsContainer.appendChild(div);
     });
 }
 
-// --- 3. 判定邏輯 ---
 submitBtn.onclick = () => {
-    const selectedOptions = document.querySelectorAll('.option-item.selected');
-    const allOptions = document.querySelectorAll('.option-item');
-    
-    if (selectedOptions.length === 0) {
-        alert("請至少選擇一個答案！");
-        return;
-    }
+    const selected = document.querySelectorAll('.option-item.selected');
+    if (selected.length === 0) return alert("請選取答案！");
 
-    // 檢查判定：是否「所有選中的都是正確的」且「所有正確的都被選中」
     let isCorrect = true;
-    allOptions.forEach(opt => {
-        const shouldBeSelected = opt.dataset.correct === "true";
-        const isActuallySelected = opt.classList.contains('selected');
-        if (shouldBeSelected !== isActuallySelected) {
-            isCorrect = false;
-        }
+    document.querySelectorAll('.option-item').forEach(opt => {
+        if ((opt.dataset.correct === "true") !== opt.classList.contains('selected')) isCorrect = false;
     });
 
     if (isCorrect) {
         const reward = currentSessionQuestions[currentQuestionIndex].reward;
-        sessionTokens += reward; // 累加代幣權重
-        alert(`正確！獲得 ${reward} 個代幣`);
+        sessionTokens += reward;
+        alert(`正確！獲得 ${reward} 代幣`);
     } else {
-        alert("答案錯誤，再接再厲！");
+        alert("回答錯誤！");
     }
 
-    // 進入下一題或結算
     if (currentQuestionIndex < 4) {
         currentQuestionIndex++;
         showQuestion();
@@ -126,13 +113,19 @@ submitBtn.onclick = () => {
 
 function finishGame() {
     const status = getPlayerStatus();
-    status.chancesUsed++; // 增加使用次數
+    status.chancesUsed++;
     status.totalTokens += sessionTokens;
     saveStatus(status);
+    updateUI();
     
-    alert(`修煉結束！本次總共獲得 ${sessionTokens} 個代幣。`);
-    initGame(); // 重新整理狀態
+    resultMsg.innerText = `本次獲得：${sessionTokens} 代幣`;
+    showElement(resultOverlay);
 }
 
-// 啟動遊戲
-initGame();
+restartBtn.onclick = () => {
+    updateUI();
+    showElement(startScreen);
+};
+
+// 初始化
+updateUI();
