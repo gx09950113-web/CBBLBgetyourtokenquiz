@@ -1,0 +1,145 @@
+/* 基本設定 */
+:root {
+    --primary-gold: #fdbb2d;
+    --glass-bg: rgba(255, 255, 255, 0.12);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #0f172a; /* 深色底色 */
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* 背景裝飾 */
+.background-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at 50% 50%, rgba(253, 187, 45, 0.1) 0%, transparent 80%);
+    z-index: -1;
+}
+
+#game-container {
+    width: 95%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+/* 狀態欄設計 */
+.status-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.status-item {
+    background: var(--glass-bg);
+    padding: 8px 15px;
+    border-radius: 50px;
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    font-size: 0.9rem;
+}
+
+.highlight {
+    color: var(--primary-gold);
+    border-color: var(--primary-gold);
+}
+
+/* 玻璃擬態卡牌核心 */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+#quiz-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 15px;
+}
+
+#question-text {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    min-height: 80px;
+}
+
+/* 選項按鈕樣式 */
+.option-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.option-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.option-item.selected {
+    background: rgba(253, 187, 45, 0.25);
+    border-color: var(--primary-gold);
+    box-shadow: 0 0 15px rgba(253, 187, 45, 0.2);
+}
+
+/* 確認按鈕 */
+.primary-btn {
+    width: 100%;
+    background: var(--primary-gold);
+    color: #000;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: filter 0.2s;
+}
+
+.primary-btn:active {
+    filter: brightness(0.8);
+}
+
+/* 隱藏元素 */
+.hidden { display: none; }
+
+/* 手機版適配 (Responsive) */
+@media (max-width: 480px) {
+    .glass-card {
+        padding: 20px;
+    }
+    #question-text {
+        font-size: 1.1rem;
+    }
+    .status-item {
+        font-size: 0.8rem;
+    }
+}
