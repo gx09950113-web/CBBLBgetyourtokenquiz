@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>錢包比臉薄 - 題庫互動遊戲</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <div id="game-container">
+        <header class="status-bar">
+            <div class="status-item">今日剩餘次數: <span id="chance">--</span></div>
+            <div class="status-item highlight">累積代幣: <span id="tokens">--</span></div>
+        </header>
+
+        <main id="quiz-card" class="glass-card">
+            <div id="quiz-header">
+                <span id="question-number">Question</span>
+                <span id="reward-tag">Reward: --</span>
+            </div>
+            
+            <h2 id="question-text">正在加載江湖祕笈...</h2>
+            
+            <div id="options-container">
+                </div>
+
+            <div class="action-area">
+                <button id="submit-btn" class="primary-btn">確認提交</button>
+            </div>
+        </main>
+
+        <div id="result-overlay" class="glass-card hidden">
+            <h2>本次修煉結束</h2>
+            <p id="result-msg"></p>
+            <button id="restart-btn" class="primary-btn">再次挑戰</button>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
